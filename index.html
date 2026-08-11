@@ -136,6 +136,40 @@
   }
   .reply-box.show{ display:block; animation: rise 0.4s ease; }
 
+  /* Popup Notification Styles */
+  .popup-overlay{
+    position: fixed;
+    inset: 0;
+    background: rgba(16,35,63,0.4);
+    backdrop-filter: blur(4px);
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    animation: fadeIn 0.3s ease;
+  }
+  .popup-card{
+    background: #ffffff;
+    border-radius: 20px;
+    padding: 24px 28px;
+    text-align: center;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+    border: 2px solid var(--gold);
+    max-width: 360px;
+    width: 100%;
+    animation: popIn 0.3s cubic-bezier(.2,.9,.25,1);
+  }
+  .popup-text{
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--navy);
+    margin: 0;
+    line-height: 1.5;
+  }
+  @keyframes fadeIn{ from{ opacity:0; } to{ opacity:1; } }
+  @keyframes popIn{ from{ opacity:0; transform: scale(0.8); } to{ opacity:1; transform: scale(1); } }
+
   .hidden{ display:none !important; }
 
   /* landing screen */
@@ -183,10 +217,17 @@
 
 <div class="hearts" id="hearts"></div>
 
-<!-- background music set to nilanjana.mp3 -->
-<audio id="bgm" loop preload="auto">
+<!-- background music set to nilanjana.mp3 (plays only ONCE) -->
+<audio id="bgm" preload="auto">
   <source src="nilanjana.mp3" type="audio/mpeg">
 </audio>
+
+<!-- 3 second popup modal -->
+<div id="popupModal" class="popup-overlay hidden">
+  <div class="popup-card">
+    <p class="popup-text bn">যদি দিতে পারো একটি বিকেল,ঘুরে আসি অজানায়! ✨💙</p>
+  </div>
+</div>
 
 <div class="stage">
   <div class="card" id="card">
@@ -213,7 +254,7 @@
       <div id="screen-0">
         <div class="eyebrow">প্রশ্ন ১</div>
         <p class="question bn">হে নীলাঞ্জনা, সাথে যাবে কি আমার?</p>
-        <p class="sub">যদি দিতে পারো একটি বিকেল,ঘুরে আসি অজানায়!</p>
+        <p class="sub bn">বেলা হলো শেষ...</p>
         <div class="btn-row" id="btnRow0">
           <button class="no-btn bn" id="noBtn0">না</button>
           <button class="yes-btn bn" onclick="answer(0,'yes')">হ্যাঁ</button>
@@ -325,7 +366,20 @@
 
   /* ---------- questions 0, 1 & 2 ---------- */
   function answer(step, val){
-    if(val === 'yes'){
+    if(step === 0 && val === 'yes'){
+      // Show 3 second popup for Question 1
+      const popup = document.getElementById('popupModal');
+      popup.classList.remove('hidden');
+      
+      const btnRow = document.querySelectorAll('#screen-0 .btn-row')[0];
+      btnRow.querySelectorAll('button').forEach(b => b.disabled = true);
+
+      setTimeout(() => {
+        popup.classList.add('hidden');
+        goTo(step + 1);
+      }, 3000);
+
+    } else if(val === 'yes'){
       document.getElementById('reply-'+step).classList.add('show');
       const btnRow = document.querySelectorAll('#screen-'+step+' .btn-row')[0];
       btnRow.querySelectorAll('button').forEach(b=> b.disabled = true);
@@ -374,7 +428,7 @@
   }
 
   /* ---------- final celebration ---------- */
-  showFinal = function(){
+  function showFinal(){
     document.getElementById('screen-3').classList.add('hidden');
     document.getElementById('screen-final').classList.remove('hidden');
     document.getElementById('progress').classList.add('hidden');
