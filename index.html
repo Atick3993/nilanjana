@@ -136,7 +136,6 @@
   }
   .reply-box.show{ display:block; animation: rise 0.4s ease; }
 
-  
   .popup-overlay{
     position: fixed;
     inset: 0;
@@ -170,7 +169,6 @@
   @keyframes fadeIn{ from{ opacity:0; } to{ opacity:1; } }
   @keyframes popIn{ from{ opacity:0; transform: scale(0.8); } to{ opacity:1; transform: scale(1); } }
 
-  
   .mute-btn{
     position: fixed;
     bottom: 20px;
@@ -199,7 +197,6 @@
 
   .hidden{ display:none !important; }
 
-  
   .landing-emoji{ font-size: 42px; margin-bottom: 14px; }
   .start-btn{
     background: linear-gradient(135deg, var(--navy), var(--royal));
@@ -211,7 +208,6 @@
   }
   .start-btn:hover{ transform: translateY(-2px); }
 
-  
   .final-emoji{ font-size: 54px; margin-bottom: 10px; }
   .final-title{
     font-family:'Baloo Da 2', sans-serif; font-size: 30px; font-weight: 800;
@@ -244,14 +240,20 @@
 
 <div class="hearts" id="hearts"></div>
 
-
+<!-- audio elements -->
 <audio id="bgm" preload="auto">
   <source src="nilanjana.mp3" type="audio/mpeg">
 </audio>
 
+<audio id="lastMsgAudio" preload="auto">
+  <source src="lastmassage.mp3" type="audio/mpeg">
+</audio>
+
+<audio id="punorjonmoAudio" preload="auto">
+  <source src="punorjonmo.mp3" type="audio/mpeg">
+</audio>
 
 <button class="mute-btn" id="muteBtn" onclick="toggleMute()" title="Mute/Unmute Audio">🔊</button>
-
 
 <div id="popupModal" class="popup-overlay hidden">
   <div class="popup-card">
@@ -262,7 +264,7 @@
 <div class="stage">
   <div class="card" id="card">
 
-    
+    <!-- LANDING -->
     <div id="screen-landing">
       <div class="landing-emoji">💙</div>
       <p class="question bn">তোমার জন্য একটা প্রশ্ন আছে...</p>
@@ -270,7 +272,7 @@
       <button class="start-btn bn" onclick="startExperience()">শুরু করি</button>
     </div>
 
-    
+    <!-- QUIZ (hidden until start) -->
     <div id="quiz" class="hidden">
 
       <div class="progress" id="progress">
@@ -280,7 +282,7 @@
         <div class="dot" data-i="3"></div>
       </div>
 
-      
+      <!-- SCREEN 0 -->
       <div id="screen-0">
         <div class="eyebrow">প্রশ্ন ১</div>
         <p class="question bn">হে নীলাঞ্জনা, সাথে যাবে কি আমার?</p>
@@ -294,7 +296,7 @@
         </div>
       </div>
 
-      
+      <!-- SCREEN 1 -->
       <div id="screen-1" class="hidden">
         <div class="eyebrow">প্রশ্ন ২</div>
         <p class="question bn">চাইলে ভেবে দেখো আরেকবার</p>
@@ -305,7 +307,7 @@
         </div>
       </div>
 
-      
+      <!-- SCREEN 2 -->
       <div id="screen-2" class="hidden">
         <div class="eyebrow">প্রশ্ন ৩</div>
         <p class="question bn">তোমার কি কোনো ছেলে বেস্ট ফ্রেন্ড আছে?</p>
@@ -319,7 +321,7 @@
         </div>
       </div>
 
-      
+      <!-- SCREEN 3 (the real one) -->
       <div id="screen-3" class="hidden">
         <div class="eyebrow">শেষ প্রশ্ন</div>
         <p class="question bn">তুমি কি আমাকে পছন্দ করো?</p>
@@ -330,19 +332,16 @@
         </div>
       </div>
 
-      
+      <!-- FINAL CELEBRATION -->
       <div id="screen-final" class="hidden">
         <div class="final-emoji">💙</div>
         <p class="final-title bn">ইয়েএএ!</p>
-        <p class="final-msg bn">
+        <p class="final-msg bn" id="finalMsgContent">
           তোমায় ছাড়া নীল গালিচায় একটু ওরা যায় না,তুমি হীনা মেঘের বাগিচায় রঙ ধনু ছড়ায় না,না,না 
-          <br>
-          সোজা সাপটা একটা সত্য কথা বলি?
-          <br>
-          <span style="font-family:'Poppins',sans-serif; font-size:13px; opacity:0.75;">
-            তোমায় ভিষন রকম ভালোবাসি
-          </span>
         </p>
+        <div style="margin-top: 24px;">
+          <button class="yes-btn bn" id="feelingsBtn" style="font-size: 15px; padding: 12px 20px;" onclick="revealFeelings()">wanna know abt my feelings?</button>
+        </div>
       </div>
 
     </div>
@@ -352,10 +351,9 @@
 <footer>built by bolt</footer>
 
 <script>
-  
   const heartsEl = document.getElementById('hearts');
   const heartChars = ['💙','💠','✨','💎','🐍','🦆','🦢','🐇'];
-  const totalEmojis = 70; // Increased density from 16 to 70
+  const totalEmojis = 70;
 
   for(let i = 0; i < totalEmojis; i++){
     const s = document.createElement('span');
@@ -367,9 +365,12 @@
     heartsEl.appendChild(s);
   }
 
-  
   const bgm = document.getElementById('bgm');
+  const lastMsgAudio = document.getElementById('lastMsgAudio');
+  const punorjonmoAudio = document.getElementById('punorjonmoAudio');
   const muteBtn = document.getElementById('muteBtn');
+
+  let currentAudio = bgm;
 
   function startExperience(){
     bgm.volume = 1.0;
@@ -386,13 +387,13 @@
     armDodgeButton(document.getElementById('noBtn0'));
   }
 
-  
   function toggleMute(){
-    bgm.muted = !bgm.muted;
-    muteBtn.textContent = bgm.muted ? '🔇' : '🔊';
+    if(currentAudio){
+      currentAudio.muted = !currentAudio.muted;
+      muteBtn.textContent = currentAudio.muted ? '🔇' : '🔊';
+    }
   }
 
-  
   function setProgress(step){
     document.querySelectorAll('.dot').forEach((d,i)=>{
       d.classList.remove('active','done');
@@ -401,10 +402,8 @@
     });
   }
 
-  
   function answer(step, val){
     if(step === 0 && val === 'yes'){
-      
       const popup = document.getElementById('popupModal');
       popup.classList.remove('hidden');
       
@@ -435,7 +434,6 @@
     if(step === 3) armDodgeButton(document.getElementById('noBtn'));
   }
 
-
   function armDodgeButton(btn){
     if(!btn || btn.dataset.armed) return; 
     btn.dataset.armed = 'true';
@@ -464,11 +462,35 @@
     });
   }
 
-
+  /* ---------- final celebration & audio transitions ---------- */
   function showFinal(){
+    bgm.pause();
+    bgm.currentTime = 0;
+
+    lastMsgAudio.volume = 1.0;
+    lastMsgAudio.play().catch(err => console.log(err));
+    currentAudio = lastMsgAudio;
+
     document.getElementById('screen-3').classList.add('hidden');
     document.getElementById('screen-final').classList.remove('hidden');
     document.getElementById('progress').classList.add('hidden');
+    launchConfetti();
+  }
+
+  function revealFeelings(){
+    lastMsgAudio.pause();
+    lastMsgAudio.currentTime = 0;
+
+    punorjonmoAudio.volume = 1.0;
+    punorjonmoAudio.play().catch(err => console.log(err));
+    currentAudio = punorjonmoAudio;
+
+    document.getElementById('feelingsBtn').parentElement.style.display = 'none';
+
+    document.getElementById('finalMsgContent').innerHTML = `
+      <strong style="font-size: 18px; color: var(--navy);">সোজা সাপ্টা একটা সত্য কথা বলি?</strong><br>
+      <span style="font-size: 17px; color: var(--royal); font-weight: 700;">তোমায় ভীষণ রকম ভালোবাসি 💙</span>
+    `;
     launchConfetti();
   }
 
