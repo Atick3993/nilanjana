@@ -136,7 +136,7 @@
   }
   .reply-box.show{ display:block; animation: rise 0.4s ease; }
 
-  /* Popup Notification Styles */
+  
   .popup-overlay{
     position: fixed;
     inset: 0;
@@ -170,7 +170,7 @@
   @keyframes fadeIn{ from{ opacity:0; } to{ opacity:1; } }
   @keyframes popIn{ from{ opacity:0; transform: scale(0.8); } to{ opacity:1; transform: scale(1); } }
 
-  /* Bottom-Right Mute Button Styles */
+  
   .mute-btn{
     position: fixed;
     bottom: 20px;
@@ -199,7 +199,7 @@
 
   .hidden{ display:none !important; }
 
-  /* landing screen */
+  
   .landing-emoji{ font-size: 42px; margin-bottom: 14px; }
   .start-btn{
     background: linear-gradient(135deg, var(--navy), var(--royal));
@@ -211,7 +211,7 @@
   }
   .start-btn:hover{ transform: translateY(-2px); }
 
-  /* celebration screen */
+  
   .final-emoji{ font-size: 54px; margin-bottom: 10px; }
   .final-title{
     font-family:'Baloo Da 2', sans-serif; font-size: 30px; font-weight: 800;
@@ -244,15 +244,15 @@
 
 <div class="hearts" id="hearts"></div>
 
-<!-- background music set to nilanjana.mp3 (plays only ONCE) -->
+
 <audio id="bgm" preload="auto">
   <source src="nilanjana.mp3" type="audio/mpeg">
 </audio>
 
-<!-- Small matching mute button at bottom right corner -->
+
 <button class="mute-btn" id="muteBtn" onclick="toggleMute()" title="Mute/Unmute Audio">🔊</button>
 
-<!-- 3 second popup modal -->
+
 <div id="popupModal" class="popup-overlay hidden">
   <div class="popup-card">
     <p class="popup-text bn">যদি দিতে পারো একটি বিকেল,ঘুরে আসি অজানায়! ✨💙</p>
@@ -262,7 +262,7 @@
 <div class="stage">
   <div class="card" id="card">
 
-    <!-- LANDING -->
+    
     <div id="screen-landing">
       <div class="landing-emoji">💙</div>
       <p class="question bn">তোমার জন্য একটা প্রশ্ন আছে...</p>
@@ -270,7 +270,7 @@
       <button class="start-btn bn" onclick="startExperience()">শুরু করি</button>
     </div>
 
-    <!-- QUIZ (hidden until start) -->
+    
     <div id="quiz" class="hidden">
 
       <div class="progress" id="progress">
@@ -280,7 +280,7 @@
         <div class="dot" data-i="3"></div>
       </div>
 
-      <!-- SCREEN 0 -->
+      
       <div id="screen-0">
         <div class="eyebrow">প্রশ্ন ১</div>
         <p class="question bn">হে নীলাঞ্জনা, সাথে যাবে কি আমার?</p>
@@ -294,7 +294,7 @@
         </div>
       </div>
 
-      <!-- SCREEN 1 -->
+      
       <div id="screen-1" class="hidden">
         <div class="eyebrow">প্রশ্ন ২</div>
         <p class="question bn">চাইলে ভেবে দেখো আরেকবার</p>
@@ -305,7 +305,7 @@
         </div>
       </div>
 
-      <!-- SCREEN 2 -->
+      
       <div id="screen-2" class="hidden">
         <div class="eyebrow">প্রশ্ন ৩</div>
         <p class="question bn">তোমার কি কোনো ছেলে বেস্ট ফ্রেন্ড আছে?</p>
@@ -319,7 +319,7 @@
         </div>
       </div>
 
-      <!-- SCREEN 3 (the real one) -->
+      
       <div id="screen-3" class="hidden">
         <div class="eyebrow">শেষ প্রশ্ন</div>
         <p class="question bn">তুমি কি আমাকে পছন্দ করো?</p>
@@ -330,7 +330,7 @@
         </div>
       </div>
 
-      <!-- FINAL CELEBRATION -->
+      
       <div id="screen-final" class="hidden">
         <div class="final-emoji">💙</div>
         <p class="final-title bn">ইয়েএএ!</p>
@@ -352,7 +352,7 @@
 <footer>built by bolt</footer>
 
 <script>
-  /* ---------- ambient floating hearts (Denser setup) ---------- */
+  
   const heartsEl = document.getElementById('hearts');
   const heartChars = ['💙','💠','✨','💎','🐍','🦆','🦢','🐇'];
   const totalEmojis = 70; // Increased density from 16 to 70
@@ -367,7 +367,7 @@
     heartsEl.appendChild(s);
   }
 
-  /* ---------- landing / music start ---------- */
+  
   const bgm = document.getElementById('bgm');
   const muteBtn = document.getElementById('muteBtn');
 
@@ -386,13 +386,13 @@
     armDodgeButton(document.getElementById('noBtn0'));
   }
 
-  /* ---------- mute button logic ---------- */
+  
   function toggleMute(){
     bgm.muted = !bgm.muted;
     muteBtn.textContent = bgm.muted ? '🔇' : '🔊';
   }
 
-  /* ---------- progress dots ---------- */
+  
   function setProgress(step){
     document.querySelectorAll('.dot').forEach((d,i)=>{
       d.classList.remove('active','done');
@@ -401,10 +401,10 @@
     });
   }
 
-  /* ---------- questions 0, 1 & 2 ---------- */
+  
   function answer(step, val){
     if(step === 0 && val === 'yes'){
-      // Show 3 second popup for Question 1
+      
       const popup = document.getElementById('popupModal');
       popup.classList.remove('hidden');
       
@@ -435,9 +435,9 @@
     if(step === 3) armDodgeButton(document.getElementById('noBtn'));
   }
 
-  /* ---------- dodging "No" button logic (reusable) ---------- */
+
   function armDodgeButton(btn){
-    if(!btn || btn.dataset.armed) return; // avoid double-arming
+    if(!btn || btn.dataset.armed) return; 
     btn.dataset.armed = 'true';
 
     function moveAway(){
@@ -464,7 +464,7 @@
     });
   }
 
-  /* ---------- final celebration ---------- */
+
   function showFinal(){
     document.getElementById('screen-3').classList.add('hidden');
     document.getElementById('screen-final').classList.remove('hidden');
